@@ -1,0 +1,67 @@
+<script type="text/javascript">
+  RED.plugins.registerPlugin("git-console-ui", {
+    type: "git-console-ui",
+    onadd: function () {
+      if (!document.getElementById('git-console-tab')) {
+        const tabContent = $('<div>').append(
+          $('<div style="padding: 10px;">').append(
+            $('<div style="display: flex; margin-bottom: 10px;">').append(
+              $('<input id="git-command-input" type="text" style="flex-grow: 1; margin-right: 5px;" placeholder="Enter git command...">'),
+              $('<button id="git-send-button" class="red-ui-button">').text(">"),
+              $('<button id="git-clear-button" class="red-ui-button" style="margin-left: 5px;">').text("X")
+            ),
+            $('<pre id="git-output" style="height: 600px; overflow: auto; border: 1px solid #ddd; padding: 5px; background: #f5f5f5; font-family: monospace;"></pre>')
+          )
+        );
+
+        RED.sidebar.addTab({
+          id: "git-console-tab",
+          label: "Git Console",
+          name: "Git Console",
+          content: tabContent,
+          iconClass: "fa fa-git"
+        });
+
+        $('#git-send-button').on('click', executeCommand);
+        $('#git-clear-button').on('click', () => {
+          $('#git-output').empty();
+        });
+        $('#git-command-input').on('keypress', function (e) {
+          if (e.which === 13) executeCommand();
+        });
+
+        function executeCommand() {
+          const command = $('#git-command-input').val().trim();
+          if (!command) return;
+
+          const basePath = (location.pathname || '').replace(/\/+$/, '');
+          const projectName = RED.projects.getActiveProject()?.name || '';
+
+          fetch(`${basePath}/git-console/command`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              command,
+              projectName
+            })
+          })
+            .then(res => res.json())
+            .then(msg => {
+              const outputElement = $('#git-output');
+              const prefix = msg.error ? '$! ' : '$ ';
+
+              outputElement.prepend(prefix + msg.command + '\n' + msg.output + '\n\n');
+              outputElement.scrollTop(0);
+            })
+            .catch(err => {
+              $('#git-output').prepend('$! ' + command + '\n' + err + '\n\n');
+            });
+
+          $('#git-command-input').val('');
+        }
+      }
+    }
+  });
+</script>
