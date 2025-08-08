@@ -35,7 +35,9 @@
           if (!command) return;
 
           const basePath = (location.pathname || '').replace(/\/+$/, '');
+          const projectPath = RED.settings.project?.path || '';
           const projectName = RED.projects.getActiveProject()?.name || '';
+          const projectDir = projectPath || projectName ? `/data/projects/${projectName}` : '';
 
           fetch(`${basePath}/git-console/command`, {
             method: 'POST',
@@ -44,7 +46,7 @@
             },
             body: JSON.stringify({
               command,
-              projectName
+              projectDir
             })
           })
             .then(res => res.json())

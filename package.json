@@ -1,6 +1,6 @@
 {
   "name": "@nachyn/node-red-contrib-git-console",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node-RED plugin that adds a Git Console tab to the UI for executing Git commands within the current project directory",
   "keywords": [
     "node-red",
@@ -10,7 +10,9 @@
     "tools",
     "git-console",
     "utility",
-    "nodes"
+    "nodes",
+    "ui",
+    "git-ui"
   ],
   "author": "Nachyn <nachyn@outlook.com>",
   "contributors": [

@@ -2,6 +2,9 @@
 
 A Node-RED plugin that adds a Git Console tab to the UI, allowing you to execute Git commands directly within your project's directory.
 
+# Note
+After switching commits using `git checkout`, refresh the page (F5) to let Node-RED compute the difference between the previously applied code and the Git data
+
 ## Features
 
 - `Git Console` tab in Node-RED UI
@@ -10,8 +13,7 @@ A Node-RED plugin that adds a Git Console tab to the UI, allowing you to execute
 - Basic command security validation
 
 ## Installation
-
-
+Install via the Palette Manager or from within your node-red directory:
 ```bash
 npm install @nachyn/node-red-contrib-git-console
 ```

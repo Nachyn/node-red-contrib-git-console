@@ -9,7 +9,7 @@ module.exports = function (RED) {
   RED.httpAdmin.use(bodyParser.json());
   RED.httpAdmin.post("/git-console/command", function (req, res) {
     const command = req.body.command;
-    const projectName = req.body.projectName;
+    const execPath = req.body.projectDir;
 
     if (!command) {
       return res.status(400).json({
@@ -19,7 +19,7 @@ module.exports = function (RED) {
       });
     }
 
-    if (!projectName) {
+    if (!execPath) {
       return res.json({
         error: true,
         output: "No active project detected",
@@ -50,8 +50,6 @@ module.exports = function (RED) {
       }
     }
 
-    const execPath = `/data/projects/${projectName}`;
-
     exec(command, { cwd: execPath }, (err, stdout, stderr) => {
       res.json({
         command: command,
@@ -61,5 +59,9 @@ module.exports = function (RED) {
     });
   });
 
-  RED.nodes.registerType("git-console", GitConsoleNode);
+  try {
+    RED.nodes.registerType("git-console", GitConsoleNode);
+  } catch (err) {
+    console.error(err);
+  }
 };
